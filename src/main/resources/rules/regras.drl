@@ -1,0 +1,70 @@
+import com.drools.sample.model.Fornecedor;
+import java.util.List;
+
+rule "Calcular pontuacao reputacao"
+    when
+        fornecedor : Fornecedor(reputacao > 0)
+    then
+        int pontosReputacao = fornecedor.getReputacao() * 10;
+        fornecedor.setPontuacao(fornecedor.getPontuacao() + pontosReputacao);
+end
+
+rule "Calcular pontuacao preco"
+    when
+        fornecedor : Fornecedor(preco > 0)
+    then
+        int pontosPreco = (int) (fornecedor.getPreco() / 500) * -10;
+        fornecedor.setPontuacao(fornecedor.getPontuacao() + pontosPreco);
+end
+
+rule "Calcular pontuacao condicao de pagamento"
+    when
+        fornecedor : Fornecedor(condicaoPgto == "À vista com desconto")
+    then
+        fornecedor.setPontuacao(fornecedor.getPontuacao() + 30);
+end
+
+rule "Calcular pontuacao condicao de pagamento a vista"
+    when
+        fornecedor : Fornecedor(condicaoPgto == "A vista")
+    then
+        fornecedor.setPontuacao(fornecedor.getPontuacao() + 20);
+end
+
+rule "Calcular pontuacao condicao de pagamento parcelado"
+    when
+        fornecedor : Fornecedor(condicaoPgto.startsWith("Parcelado"))
+    then
+        fornecedor.setPontuacao(fornecedor.getPontuacao() + 10);
+end
+
+rule "Calcular pontuacao frete"
+    when
+        fornecedor : Fornecedor(frete > 0)
+    then
+        int pontosFrete = (fornecedor.getFrete() / 30) * -10;
+        fornecedor.setPontuacao(fornecedor.getPontuacao() + pontosFrete);
+end
+
+rule "Definir melhor fornecedor"
+    dialect "mvel"
+    when
+        $fornecedor : Fornecedor()
+    then
+        int pontos = Math.abs(100 - $fornecedor.getPontuacao());
+        $fornecedor.setDiferencaPontos(pontos);
+end
+
+rule "Selecionar fornecedor com maior pontuacao"
+    no-loop true
+    dialect "mvel"
+    when
+        $melhorFornecedor : Fornecedor()
+        not Fornecedor(diferencaPontos < $melhorFornecedor.getDiferencaPontos())
+    then
+        System.out.println($melhorFornecedor.getNome() + " com pontuacao: " + $melhorFornecedor.getPontuacao());
+    // Remover outros fornecedores da lista (opcional)
+    // forall(Fornecedor(fornecedor != $melhorFornecedor)) {
+    //     retract(fornecedor);
+    // }
+end

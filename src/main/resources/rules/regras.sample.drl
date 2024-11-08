@@ -1,0 +1,54 @@
+import com.drools.sample.model.Fornecedor;
+
+dialect "mvel"
+
+rule "Preço competitivo (R$)"
+when
+    $fornecedor : Fornecedor(preco < 20)
+then
+    $fornecedor.setPontuacao($fornecedor.getPontuacao() + 10);
+end
+
+rule "Alta qualidade (0 a 10)"
+when
+    $fornecedor : Fornecedor(qualidade >= 8)
+then
+    $fornecedor.setPontuacao($fornecedor.getPontuacao() + 20);
+end
+
+rule "Prazo de entrega rápido, menor que 3 dias"
+when
+    $fornecedor : Fornecedor(prazoEntrega <= 3)
+then
+    $fornecedor.setPontuacao($fornecedor.getPontuacao() + 15);
+end
+
+rule "Alta reputação (Até 5)"
+when
+    $fornecedor : Fornecedor(reputacao >= 4)
+then
+    $fornecedor.setPontuacao($fornecedor.getPontuacao() + 25);
+end
+
+rule "Capacidade de atendimento elevada (Unidades de pão)"
+when
+    $fornecedor : Fornecedor(capacidadeAtendimento >= 100)
+then
+    $fornecedor.setPontuacao($fornecedor.getPontuacao() + 10);
+end
+
+rule "Penalidade para baixa qualidade (até 10)"
+when
+    $fornecedor : Fornecedor(qualidade < 5)
+then
+    $fornecedor.setPontuacao($fornecedor.getPontuacao() - 10);
+end
+
+rule "Penalidade para prazo de entrega longo"
+when
+    $fornecedor : Fornecedor(prazoEntrega > 7)
+then
+    $fornecedor.setPontuacao($fornecedor.getPontuacao() - 15);
+end
+
+		
