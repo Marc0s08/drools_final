@@ -16,6 +16,7 @@ public class DroolsService {
 
     public List<Fornecedor> avaliar(List<Fornecedor> fornecedores) {
         try {
+            
             // Inicia uma nova sessão do Drools
             KieSession kieSession = kieContainer.newKieSession();
             System.out.println("Sessão Drools iniciada.");
@@ -37,6 +38,7 @@ public class DroolsService {
             // Retorna a lista de fornecedores (alterada se necessário)
             return fornecedores; 
         } catch (Exception e) {
+            
             // Captura qualquer erro e exibe no log
             e.printStackTrace();
             throw new RuntimeException("Erro ao processar as regras com Drools", e);

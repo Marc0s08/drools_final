@@ -9,6 +9,7 @@ public class Fornecedor {
     private int frete;
     private int pontuacao;
     private int diferencaPontos;
+    private String mensagem;
 
     // Construtor
     public Fornecedor(String nome, int reputacao, int preco, String condicaoPgto, int frete) {
@@ -18,6 +19,8 @@ public class Fornecedor {
         this.condicaoPgto = condicaoPgto;
         this.frete = frete;
         this.pontuacao = 0;
+        this.diferencaPontos = 0;
+        this.mensagem = "Reprovado"; // Mensagem padrão
     }
 
     // Getters e Setters
@@ -77,14 +80,11 @@ public class Fornecedor {
         this.diferencaPontos = diferencaPontos;
     }
 
-    // Método para exibir informações do fornecedor (opcional)
-    // public void exibirInformacoes() {
-    //     System.out.println("Fornecedor: " + nome);
-    //     System.out.println("Reputação: " + reputacao);
-    //     System.out.println("Preço: " + preco);
-    //     System.out.println("Condição de Pagamento: " + condicaoPgto);
-    //     System.out.println("Frete: " + frete);
-    //     System.out.println("Pontuação: " + pontuacao);
-    //     System.out.println("Diferença de Pontos: " + diferencaPontos);
-    // }
+    public String getMensagem() {
+        return mensagem;
+    }
+
+    public void setMensagem(String mensagem) {
+        this.mensagem = mensagem;
+    }
 }
