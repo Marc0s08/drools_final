@@ -28,7 +28,7 @@ document.getElementById('loadDataButton').addEventListener('click', function() {
                 "nome": "Gamma Importadora",
                 "reputacao": 9,
                 "preco": 1300,
-                "condicaoPgto": "A vista",
+                "condicaoPgto": "À vista com desconto",
                 "frete": 200
             },
             {
@@ -84,12 +84,13 @@ document.getElementById('loadDataButton').addEventListener('click', function() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data);  // Adiciona esta linha para debugar
 
         const dataContainer = document.getElementById('dataContainer');
         dataContainer.innerHTML = '';  // Limpar conteúdo anterior
 
         if (Array.isArray(data)) {  // Verifica se 'data' é um array
+
+            console.log(data);
             // Ordenar pelo campo "pontuacao" (maior para o menor)
             data.sort((a, b) => b.pontuacao - a.pontuacao);
 
@@ -104,6 +105,7 @@ document.getElementById('loadDataButton').addEventListener('click', function() {
                         <th>Condição de Pagamento</th>
                         <th>Frete</th>
                         <th>Pontuação Final</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -136,6 +138,21 @@ document.getElementById('loadDataButton').addEventListener('click', function() {
                 return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(preco);
             };
 
+            const aprovacao = (mensagem) => {
+                let mensagemColorida = '';
+            
+                if (mensagem === "Aprovado") {
+                    mensagemColorida = "<b style='color: green;'>Aprovado</b>";
+                } else if (mensagem === "Reprovado") {
+                    mensagemColorida = "<b style='color: red;'>Reprovado</b>";
+                } else {
+                    mensagemColorida = "<b>" + mensagem + "</b>";
+                }
+            
+                return mensagemColorida;
+            }
+            
+
             // Preenche a tabela com dados
             data.forEach(fornecedor => {
                 const row = document.createElement('tr');
@@ -146,6 +163,7 @@ document.getElementById('loadDataButton').addEventListener('click', function() {
                     <td>${fornecedor.condicaoPgto}</td>
                     <td>${formatarPreco(fornecedor.frete)}</td>
                     <td>${fornecedor.pontuacao}</td> <!-- Exibe a pontuação final retornada do backend -->
+                    <td>${aprovacao(fornecedor.mensagem)}</td>
                 `;
                 tbody.appendChild(row);
             });

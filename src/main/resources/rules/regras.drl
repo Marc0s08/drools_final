@@ -7,6 +7,7 @@ rule "Calcular pontuacao reputacao"
     then
         int pontosReputacao = fornecedor.getReputacao() * 10;
         fornecedor.setPontuacao(fornecedor.getPontuacao() + pontosReputacao);
+        update(fornecedor) 
 end
 
 rule "Calcular pontuacao preco"
@@ -15,6 +16,7 @@ rule "Calcular pontuacao preco"
     then
         int pontosPreco = (int) (fornecedor.getPreco() / 500) * -10;
         fornecedor.setPontuacao(fornecedor.getPontuacao() + pontosPreco);
+        update(fornecedor) 
 end
 
 rule "Calcular pontuacao condicao de pagamento"
@@ -22,6 +24,7 @@ rule "Calcular pontuacao condicao de pagamento"
         fornecedor : Fornecedor(condicaoPgto == "À vista com desconto")
     then
         fornecedor.setPontuacao(fornecedor.getPontuacao() + 30);
+        update(fornecedor) 
 end
 
 rule "Calcular pontuacao condicao de pagamento a vista"
@@ -29,6 +32,7 @@ rule "Calcular pontuacao condicao de pagamento a vista"
         fornecedor : Fornecedor(condicaoPgto == "A vista")
     then
         fornecedor.setPontuacao(fornecedor.getPontuacao() + 20);
+        update(fornecedor) 
 end
 
 rule "Calcular pontuacao condicao de pagamento parcelado"
@@ -36,6 +40,7 @@ rule "Calcular pontuacao condicao de pagamento parcelado"
         fornecedor : Fornecedor(condicaoPgto.startsWith("Parcelado"))
     then
         fornecedor.setPontuacao(fornecedor.getPontuacao() + 10);
+        update(fornecedor) 
 end
 
 rule "Calcular pontuacao frete"
@@ -44,27 +49,13 @@ rule "Calcular pontuacao frete"
     then
         int pontosFrete = (fornecedor.getFrete() / 30) * -10;
         fornecedor.setPontuacao(fornecedor.getPontuacao() + pontosFrete);
+        update(fornecedor) 
 end
 
-rule "Definir melhor fornecedor"
-    dialect "mvel"
+rule "Exibir fornecedores com pontuação acima de 50"
     when
-        $fornecedor : Fornecedor()
+        fornecedor : Fornecedor(pontuacao >= 50)
     then
-        int pontos = Math.abs(100 - $fornecedor.getPontuacao());
-        $fornecedor.setDiferencaPontos(pontos);
-end
-
-rule "Selecionar fornecedor com maior pontuacao"
-    no-loop true
-    dialect "mvel"
-    when
-        $melhorFornecedor : Fornecedor()
-        not Fornecedor(diferencaPontos < $melhorFornecedor.getDiferencaPontos())
-    then
-        System.out.println($melhorFornecedor.getNome() + " com pontuacao: " + $melhorFornecedor.getPontuacao());
-    // Remover outros fornecedores da lista (opcional)
-    // forall(Fornecedor(fornecedor != $melhorFornecedor)) {
-    //     retract(fornecedor);
-    // }
+        fornecedor.setMensagem("Aprovado");
+        update(fornecedor) 
 end
